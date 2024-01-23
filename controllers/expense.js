@@ -44,19 +44,23 @@ exports.deleteExpense = async (req, res) => {
     const expenseId = req.params.id;
 
     try {
-        const expense = await Expense.distroy({
+        const expenseById = await Expense.findByPk(expenseId);
+        const expense = await Expense.destroy({
             where: {
-                id : expenseId
+                id: expenseId
             }
         })
 
-        if(expense){
-            res.json({success: true, ...expense.dataValues});
+        console.log(expense);
+
+        if(expense > 0){
+            res.json({success: true, ...expenseById.dataValues});
         }
         else {
             res.status(404).json({success: false, message: 'Expense Not Found'});
         }
     } catch(err) {
+        console.log(err);
         res.status(500).json({success: false, message: 'Internal Server Error'});
     }
 }
@@ -73,7 +77,7 @@ exports.editExpense = async (req, res) => {
         })
 
         if(expense[0]){
-            res.json({success: true, ...expense[0].dataValues});
+            res.json({success: true, ...{amount, discription, catagory}});
         }
         else {
             res.status(404).json({success: false, message: 'Expense Not Found'});
